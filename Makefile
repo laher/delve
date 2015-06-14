@@ -30,8 +30,8 @@ ifeq "$(CERT)" ""
 	$(error You must provide a CERT env var)
 endif
 	go test $(PREFIX)/terminal $(PREFIX)/dwarf/frame $(PREFIX)/dwarf/op $(PREFIX)/dwarf/util $(PREFIX)/source $(PREFIX)/dwarf/line
-	go test -c $(PREFIX)/proc && codesign -s $(CERT) ./proc.test && ./proc.test $(TESTFLAGS) && rm ./proc.test
-	go test -c $(PREFIX)/service/rest && codesign -s $(CERT) ./rest.test && ./rest.test $(TESTFLAGS) && rm ./rest.test
+	cd proc && go test -c $(PREFIX)/proc && codesign -s $(CERT) ./proc.test && ./proc.test $(TESTFLAGS) && rm ./proc.test && cd ..
+	cd service/rest && go test -c $(PREFIX)/service/rest && codesign -s $(CERT) ./rest.test && ./rest.test $(TESTFLAGS) && rm ./rest.test && cd ../..
 else
 	go test -v ./...
 endif
@@ -41,7 +41,7 @@ ifeq "$(UNAME)" "Darwin"
 ifeq "$(CERT)" ""
 	$(error You must provide a CERT env var)
 endif
-	go test -c $(PREFIX)/proc && codesign -s $(CERT) ./proc.test && ./proc.test -test.run $(RUN) && rm ./proc.test
+	cd proc && go test -c $(PREFIX)/proc && codesign -s $(CERT) ./proc.test && ./proc.test -test.run $(RUN) && rm ./proc.test && cd ..
 else
 	go test $(PREFIX) -run $(RUN)
 endif
@@ -51,7 +51,7 @@ ifeq "$(UNAME)" "Darwin"
 ifeq "$(CERT)" ""
 	$(error You must provide a CERT env var)
 endif
-	go test -c $(PREFIX)/service/rest && codesign -s $(CERT) ./rest.test && ./rest.test -test.run $(RUN) && rm ./rest.test
+	cd service/rest && go test -c $(PREFIX)/service/rest && codesign -s $(CERT) ./rest.test && ./rest.test -test.run $(RUN) && rm ./rest.test && cd ../..
 else
 	go test $(PREFIX)/service/rest -run $(RUN)
 endif
